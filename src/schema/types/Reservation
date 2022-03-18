@@ -1,0 +1,38 @@
+import {
+    GraphQLID,
+    GraphQLObjectType,
+    GraphQLString,
+    GraphQLInt,
+    GraphQLNonNull,
+    GraphQLList,
+} from 'graphql';
+import User from './user';
+import { extractPrefixedColumns } from '../../db/utils';
+
+const Reservation = new GraphQLObjectType({
+    name: 'Reservation',
+    fields: {
+        id: { type: new GraphQLNonNull(GraphQLID) },
+        roomNumber: { type: new GraphQLNonNull(GraphQLInt) },
+
+        createdAt: {
+            type: new GraphQLNonNull(GraphQLString),
+            resolve: (source) => source.createdAt.toISOString(),
+        },
+        reservationStart: { 
+            type: new GraphQLNonNull(GraphQLString),
+            resolve: (source) => source.createdAt.toISOString(),
+        },
+        reservationEnd: {
+            type: new GraphQLNonNull(GraphQLString),
+            resolve: (source) => source.createdAt.toISOString(),
+        },
+        user: {
+            type: new GraphQLNonNull(User),
+            resolve: (source) =>
+                extractPrefixedColumns({ prefixedObject: source, prefix: 'author' }),
+        },
+        
+    },
+});
+export default Reservation;

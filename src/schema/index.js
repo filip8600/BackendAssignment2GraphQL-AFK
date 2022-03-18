@@ -1,0 +1,93 @@
+import { DateTimeResolver } from 'graphql-scalars'
+import {
+  GraphQLSchema,
+  GraphQLObjectType,
+  GraphQLString,
+  GraphQLInt,
+  GraphQLNonNull,
+  printSchema,
+  GraphQLList, } from 'graphql';
+  import { PrismaClient } from '@prisma/client';
+  import { makeExecutableSchema } from '@graphql-tools/schema';
+import Task from './types/task';
+import Reservation from './types/Reservation';
+
+const prisma = new PrismaClient();
+const typeDefs = `
+
+  type User {
+    email: String!
+    name: String
+    role: String
+  }
+  type Reservation {
+    createdAt: DateTime! 
+    reservationStart: DateTime!
+    reservationEnd: DateTime! 
+    guestId: Int
+    roomId: Int
+  }
+  type Room {
+    roomNumber: Int
+    hasOceanView: Boolean 
+    pricePerNight: Float
+    hasBathroom: Boolean  
+    numberOfAdultBeds: Int 
+    maxOccupancy: Int 
+    hasAircondition: Boolean  
+    hasMinibar: Boolean 
+  }
+
+  type Query {
+
+    allUsers: [User!]!
+    allRooms: [Room!]!
+    allReservations: [Reservation!]!
+
+  }
+`;
+
+const resolvers = {
+
+  Query: {
+    allUsers: () => {
+      return prisma.user.findMany();
+    },
+    allReservations: () => {
+      return prisma.reservation.findMany();
+    },
+    allRooms: () => {
+      return prisma.room.findMany();
+    }
+  }
+};
+
+export const schema = makeExecutableSchema({
+  resolvers,
+  typeDefs,
+});
+  
+// const QueryType = new GraphQLObjectType({
+//   name: 'Query',
+//   fields: {
+//     taskMainList: {
+//       type: new GraphQLList(new GraphQLNonNull(Task)),
+//       resolve: async (source, args, { pgApi }) => {
+//         return await pgApi.taskMainList();
+//       },
+//     },
+//     reservationMainList:{
+//       type: new GraphQLList(new GraphQLNonNull(Reservation)),
+//       resolve: async (source, args, { pgApi }) => {
+//         return await pgApi.reservationMainList();
+        
+//     },
+//   },
+// }
+// });
+
+// export const schema = new GraphQLSchema({
+//   query: QueryType,
+// });
+
+console.log(printSchema(schema));
