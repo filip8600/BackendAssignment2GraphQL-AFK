@@ -1,4 +1,8 @@
 import { DateTimeResolver } from 'graphql-scalars'
+const { GraphQLDate } = require('graphql-iso-date')
+const scalarResolvers = {
+  Date: GraphQLDate
+}
 import {
   GraphQLSchema,
   GraphQLObjectType,
@@ -7,8 +11,8 @@ import {
   GraphQLNonNull,
   printSchema,
   GraphQLList, } from 'graphql';
-  import { PrismaClient } from '@prisma/client';
-  import { makeExecutableSchema } from '@graphql-tools/schema';
+import { PrismaClient } from '@prisma/client';
+import { makeExecutableSchema } from '@graphql-tools/schema';
 import Task from './types/task';
 import Reservation from './types/Reservation';
 
@@ -21,9 +25,9 @@ const typeDefs = `
     role: String
   }
   type Reservation {
-    createdAt: DateTime! 
-    reservationStart: DateTime!
-    reservationEnd: DateTime! 
+    createdAt: Date! 
+    reservationStart: Date!
+    reservationEnd: Date!
     guestId: Int
     roomId: Int
   }
@@ -48,7 +52,7 @@ const typeDefs = `
 `;
 
 const resolvers = {
-
+  Date:GraphQLDate,
   Query: {
     allUsers: () => {
       return prisma.user.findMany();
@@ -63,6 +67,7 @@ const resolvers = {
 };
 
 export const schema = makeExecutableSchema({
+  scalarResolvers,
   resolvers,
   typeDefs,
 });

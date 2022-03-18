@@ -1,5 +1,9 @@
 import { graphqlHTTP } from 'express-graphql';
 import { schema } from './schema';
+const { GraphQLDate } = require('graphql-iso-date')
+const scalarResolvers = {
+  DateTime: GraphQLDate
+}
 
 import express from 'express';
 import cors from 'cors';
