@@ -23,6 +23,7 @@ async function main() {
   server.use('/:fav.ico', (req, res) => res.sendStatus(204));
 
   server.use('/graphql', graphqlHTTP({
+    graphiql: true,
     schema,
   }));
 
