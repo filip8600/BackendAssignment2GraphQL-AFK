@@ -1,0 +1,57 @@
+//Querries: //
+{allReservations{createdAt reservationStart reservationEnd createdAt roomId}}
+query{allRooms{  roomNumber pricePerNight numberOfAdultBeds hasMinibar }}
+{allUsers{name role}}
+
+//Mutations: //
+
+mutation{
+  signupUser(data:{
+  
+    email:"klaus@klaus.dk", 
+    name: "Klaus", 
+    role: "GUESTS"})
+  {
+  	name
+  	email
+  	role
+  }
+}
+
+mutation{
+  signupUser(data:{
+  
+    email:"bo@bo.dk", 
+    name: "Bo", 
+    role: "MANAGER"})
+  {
+  	name
+  	email
+  	role
+  }
+}
+
+mutation{
+  signupUser(data:{
+  
+    email:"ib@ib.dk", 
+    name: "ib", 
+    role: "CLERK"})
+  {
+  	name
+  	email
+  	role
+  }
+}
+
+mutation{createRoom(data:{roomNumber:111,hasOceanView:true,pricePerNight:123,hasBathroom:true,numberOfAdultBeds:1,maxOccupancy:3,hasAircondition:true,hasMinibar:true})
+{
+  roomNumber
+  hasMinibar
+  pricePerNight
+}}
+
+
+mutation{createReservation(data:{reservationStart: "2022-03-22T09:53:25.000Z", reservationEnd: "2022-03-24T09:53:29.000Z", roomId:1, guestId: 1 }){
+  roomId
+}}

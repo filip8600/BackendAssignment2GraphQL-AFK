@@ -28,29 +28,8 @@ async function main() {
   }));
 
 
-  // server.use(
-  //   '/graphql',
-  //   graphqlHTTP({
-  //     schema,
-  //     context: { pgApi },
-  //     graphiql: true,
-  //     customFormatErrorFn: (err) => {
-  //       const errorReport = {
-  //         message: err.message,
-  //         locations: err.locations,
-  //         stack: err.stack ? err.stack.split('\n') : [],
-  //         path: err.path,
-  //       };
-  //       console.error('GraphQL Error', errorReport);
-  //       return config.isDev
-  //         ? errorReport
-  //         : { message: 'Oops! Something went wrong! :(' };
-  //     },
-  //   })
-  // );
-
   server.listen(config.port, () => {
-    console.log(`Server URL: http://localhost:${config.port}/`);
+    console.log(`Server URL: http://localhost:${config.port}/graphql`);
   });
 }
 
