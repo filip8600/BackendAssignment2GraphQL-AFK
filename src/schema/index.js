@@ -20,11 +20,13 @@ const prisma = new PrismaClient();
 const typeDefs = `
 scalar DateTime
   type User {
+    id: Int
     email: String!
     name: String
     role: String
   }
   type Reservation {
+    id: Int
     createdAt: DateTime! 
     reservationStart: DateTime!
     reservationEnd: DateTime!
@@ -32,6 +34,7 @@ scalar DateTime
     roomId: Int
   }
   type Room {
+    id: Int
     roomNumber: Int
     hasOceanView: Boolean 
     pricePerNight: Float
@@ -50,15 +53,24 @@ scalar DateTime
   }
   type Mutation {
     createReservation(data: ReservationInput): Reservation!
+    updateReservation(data: ReservationInput): Reservation!
+    deleteReservation(data: Int): Reservation!
     createRoom(data: RoomInput): Room!
+    updateRoom(data: RoomInput): Room!
+    deleteRoom(data: Int): Room!
     signupUser(data: UserInput): User!
+    updateUser(data: UserInput): User!
+    deleteUser(data: Int): User!
+
   }
   input UserInput{
+    id: Int
     email: String!
     name: String
     role: String
   }
   input RoomInput {
+    id: Int
     roomNumber: Int
     hasOceanView: Boolean 
     pricePerNight: Float
@@ -69,6 +81,7 @@ scalar DateTime
     hasMinibar: Boolean 
   }
   input ReservationInput {
+    id: Int
     reservationStart: DateTime!
     reservationEnd: DateTime!
     guestId: Int
@@ -92,7 +105,7 @@ const resolvers = {
     }
   },
   Mutation:{
-    /**
+    /**USER
      * @param {any} _parent
      * @param {{data: {email: string, name?: string}}} args
      * @param {{ prisma: Prisma }} context
@@ -108,10 +121,26 @@ const resolvers = {
         },
       })
     },
+    updateUser: (_parent, args) =>{
+      return prisma.user.update({data: args.data,
+        where:{id:args.data.id}})
+    },
+    deleteUser: (_parent, args) =>{
+      return prisma.user.delete({where:{id:args.data}})
+    },
     createRoom:(_parrent,args)=>{
       return prisma.room.create({
         data: args.data
       })
+    },
+    updateRoom:(_parrent,args)=>{
+      return prisma.room.update({
+        data: args.data,
+        where:{id:args.data.id}
+      })
+    },
+    deleteRoom:(_parrent,args)=>{
+      return prisma.room.delete({where:{id:args.data}})
     },
     createReservation:async(_parrent,args)=> {
       let otherReservations= await prisma.reservation.findMany({
@@ -125,6 +154,13 @@ const resolvers = {
     })
     if(otherReservations.length>0) return "ERROR :("
     return prisma.reservation.create({data: args.data})
+    },
+    updateReservation:(_parrent,args) => {
+      return prisma.reservation.update({data: args.data,
+      where:{id:args.data.id}})
+    },
+    deleteReservation:(_parrent,args) => {
+      return prisma.reservation.delete({where:{id:args.data}})
     }
 
   }
